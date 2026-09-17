@@ -27,6 +27,5 @@ router.get("/", (req, res) => {
 });
 
 // Route that targets the contacts controller logic
-router.use("/contacts", require("./contacts"));
-
+router.use("/contacts", require("../controllers/contacts"));
 module.exports = router;
