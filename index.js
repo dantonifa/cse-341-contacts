@@ -1,5 +1,4 @@
 require("dotenv").config(); // <-- ADD THIS AS LINE 1
-require("node:dns/promises").setServers(["1.1.1.1", "8.8.8.8"]);
 
 const express = require("express");
 const bodyParser = require("body-parser");
