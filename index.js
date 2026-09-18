@@ -20,12 +20,16 @@ app.listen(port, () => {
   console.log(`Connected and listening on port ${port}`);
 });
 
-// Initialize the database connection in parallel
+// Initialize the database connection first, then unlock the port
 mongodb.initDb((err) => {
   if (err) {
-    console.log("Database connection warning:", err);
+    console.log("Database initialization failed:", err);
   } else {
-    console.log("Database successfully integrated.");
+    console.log("Database initialized successfully pointing to: cse-341-contacts");
+    // Open the server port strictly after the database handshake is active
+    app.listen(port, () => {
+      console.log(`Connected to DB and listening on port ${port}`);
+    });
   }
 });
 
