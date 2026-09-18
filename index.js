@@ -15,12 +15,17 @@ app
   })
   .use("/", require("./routes"));
 
-// Initialize the database connection before starting the server
+// Open the server port directly to guarantee Render can find it
+app.listen(port, () => {
+  console.log(`Connected and listening on port ${port}`);
+});
+
+// Initialize the database connection in parallel
 mongodb.initDb((err) => {
   if (err) {
-    console.log(err);
+    console.log("Database connection warning:", err);
   } else {
-    app.listen(port);
-    console.log(`Connected to DB and listening on port ${port}`);
+    console.log("Database successfully integrated.");
   }
 });
+
