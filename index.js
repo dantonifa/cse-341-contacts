@@ -14,12 +14,7 @@ app
   })
   .use("/", require("./routes"));
 
-// Open the server port directly to guarantee Render can find it
-app.listen(port, () => {
-  console.log(`Connected and listening on port ${port}`);
-});
-
-// Initialize the database connection first, then unlock the port
+// Initialize the database connection first, then unlock the server port
 mongodb.initDb((err) => {
   if (err) {
     console.log("Database initialization failed:", err);
@@ -31,4 +26,5 @@ mongodb.initDb((err) => {
     });
   }
 });
+
 
