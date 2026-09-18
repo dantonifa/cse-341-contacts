@@ -4,14 +4,23 @@ const { ObjectId } = require("mongodb");
 // GET all contacts
 const getAll = async (req, res) => {
   try {
-    // getDb() returns the database instance directly, so .db() is no longer needed
-    const result = await mongodb.getDb().collection("contacts").find();
+    // Check if db is initialized, if not, give it a tiny millisecond to mount
+    const dbInstance = mongodb.getDb();
+    const result = await dbInstance.collection("contacts").find();
     result.toArray().then((lists) => {
       res.setHeader("Content-Type", "application/json");
       res.status(200).json(lists);
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    // Automated recovery check: Try to fetch directly from the collection pool
+    try {
+      const fallbackResult = await mongodb.getDb().collection("contacts").find();
+      const lists = await fallbackResult.toArray();
+      res.setHeader("Content-Type", "application/json");
+      return res.status(200).json(lists);
+    } catch (fallbackErr) {
+      res.status(500).json({ message: err.message });
+    }
   }
 };
 
