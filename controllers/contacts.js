@@ -14,7 +14,10 @@ const getAll = async (req, res) => {
   } catch (err) {
     // Automated recovery check: Try to fetch directly from the collection pool
     try {
-      const fallbackResult = await mongodb.getDb().collection("contacts").find();
+      const fallbackResult = await mongodb
+        .getDb()
+        .collection("contacts")
+        .find();
       const lists = await fallbackResult.toArray();
       res.setHeader("Content-Type", "application/json");
       return res.status(200).json(lists);
