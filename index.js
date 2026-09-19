@@ -8,11 +8,20 @@ const app = express();
 
 app
   .use(bodyParser.json())
-  .use(
-    "/api-docs",
-    require("swagger-ui-express").serve,
-    require("swagger-ui-express").setup(require("./swagger-output.json")),
-  )
+  // Load the Swagger configuration file
+const swaggerDocument = require("./swagger-output.json");
+
+// Force Swagger to use the production host regardless of the JSON file configuration
+swaggerDocument.host = 'cse-341-contacts-457w.onrender.com';
+swaggerDocument.schemes = ['https'];
+
+// Serve the interactive documentation interface
+app.use(
+  "/api-docs",
+  require("swagger-ui-express").serve,
+  require("swagger-ui-express").setup(swaggerDocument)
+);
+
   .use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     next();
