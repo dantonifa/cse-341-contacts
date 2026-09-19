@@ -6,27 +6,31 @@ const mongodb = require("./config/connect");
 const port = process.env.PORT || 8080;
 const app = express();
 
-app
-  .use(bodyParser.json())
-  // Load the Swagger configuration file
+// Load the Swagger configuration file
 const swaggerDocument = require("./swagger-output.json");
 
 // Force Swagger to use the production host regardless of the JSON file configuration
-swaggerDocument.host = 'cse-341-contacts-457w.onrender.com';
-swaggerDocument.schemes = ['https'];
+swaggerDocument.host = "cse-341-contacts-457w.onrender.com";
+swaggerDocument.schemes = ["https"];
+
+// Middleware and routes setup
+app.use(bodyParser.json());
 
 // Serve the interactive documentation interface
 app.use(
   "/api-docs",
   require("swagger-ui-express").serve,
-  require("swagger-ui-express").setup(swaggerDocument)
+  require("swagger-ui-express").setup(swaggerDocument),
 );
 
-  .use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    next();
-  })
-  .use("/", require("./routes"));
+// CORS headers configuration
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  next();
+});
+
+// Main routes setup
+app.use("/", require("./routes"));
 
 // Initialize the database connection first, then unlock the server port
 mongodb.initDb((err) => {
